@@ -17,8 +17,6 @@ trie_t  *new_node(const char key)
     return node;
 }
 
-//TO DO: Organize alphabetically to improve search
-//(no need to keep looking after "b" if we are looking for "a")
 bool  add_string(const char *string, trie_t *trie)
 {
     trie_t  *child = trie->child;
@@ -26,39 +24,34 @@ bool  add_string(const char *string, trie_t *trie)
 
     while (child != NULL)
     {
+        //If the key is the current letter we are looking for..
         if (child->key == string[0])
         {
-            if (string[0] == '\0')
-                return false;//failed to insert, string already exists in trie
-            return add_string(string + 1, child);
+            if (string[0] == '\0')//..and its the end of the word..
+                return false;//..then the word is already in the trie
+            return add_string(string + 1, child);//..else we keep going
         }
-        else if (child->key > string[0])//the current key is passed the current letter (alphabetically)
-            break;
+        //..or if the key is past the letter (looking for 'b' but already looking at 'f')
+        else if (child->key > string[0])
+            break;//..then we break, we need to insert the word here
         last = child;
         child = child->sibling;
     }
     trie_t  *node = new_node(string[0]);
-    if (last == NULL)//the key must be inserted before others
+    //If we need to insert the word before others.. ('inn' goes before 'tea')
+    if (last == NULL)
     {
         trie->child = node;
         node->sibling = child;
     }
-    else
+    else//..else insert in between last and next node
     {
-        /*
-         ** Inserts new node in sibling list, keeping
-         ** the alphabetical order. The node will be inserted
-         ** either at the end of the list, or at the
-         ** point where the previous loop called `break`.
-         */
         node->sibling = last->sibling;
         last->sibling = node;
     }
-    /*
-    ** We just need to add all the remaining letters since
-    ** we got on a new subtrie.
-    */
-    string++;
+    //Since we just created a new subtrie for our word,
+    //we just need to insert all the letters from here.
+    string++;//we did this during this loop
     while (string[0] != '\0')
     {
         node->child = new_node(string[0]);
@@ -76,14 +69,16 @@ bool  is_in_trie(const char *string, const trie_t *trie)
 
     while (child != NULL)
     {
+        //If the key is the current letter we are looking for..
         if (child->key == string[0])
         {
-            if (string[0] == '\0')//if we just looked at the trie_delimiter
-                return true;//we found the string
-            return is_in_trie(string + 1, child);
+            if (string[0] == '\0')//..and its the end of the word..
+                return true;//..then we found the string
+            return is_in_trie(string + 1, child);//..else we keep looking
         }
-        else if (child->key > string[0])//we passed the current letter, impossible to find the word
-            return false;
+        //..or if the key is past the letter (looking for 'b' but already looking at 'f')
+        else if (child->key > string[0])
+            return false;//..then we cannot find this word anymore
         child = child->sibling;
     }
     return false;

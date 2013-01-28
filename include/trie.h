@@ -3,12 +3,6 @@
 
 # include <stdbool.h>
 
-/*
-** End of string character to distinguish
-** between "cat" and "catalog".
-*/
-static const char trie_delimiter = 0;
-
 typedef struct s_trie trie_t;
 struct  s_trie
 {
