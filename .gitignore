@@ -1,0 +1,16 @@
+# Vim files
+*.swp
+*.swo
+
+# Emacs files
+*~
+
+# C/C++ files
+*.o
+*.a
+*.so
+*.out
+
+# Misc
+bin
+build
