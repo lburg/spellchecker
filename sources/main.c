@@ -3,6 +3,7 @@
 #include <string.h>
 #include <signal.h>
 #include "trie.h"
+#include "spellcheck.h"
 
 static trie_t *g_correct_words = NULL;
 
