@@ -11,6 +11,7 @@ struct  s_trie
     trie_t  *sibling;
 };
 
+trie_t  *new_trie_root(void);
 trie_t  *new_node(const char key);
 bool  add_string(const char *string, trie_t *trie);
 bool  is_in_trie(const char *string, const trie_t *trie);

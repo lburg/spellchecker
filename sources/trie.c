@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "trie.h"
 
+trie_t  *new_trie_root(void)
+{
+    return new_node('\0');
+}
+
 trie_t  *new_node(const char key)
 {
     trie_t  *node = malloc(sizeof(*node));
