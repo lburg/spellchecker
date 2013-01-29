@@ -4,7 +4,7 @@
 
 int   main(void)
 {
-    trie_t  *t = new_node(trie_delimiter);
+    trie_t  *t = new_node('\0');
 
     if (t == NULL)
     {

@@ -59,7 +59,7 @@ bool  add_string(const char *string, trie_t *trie)
         string++;
     }
     /* Last node to specify end of word */
-    node->child = new_node(trie_delimiter);
+    node->child = new_node(string[0]);
     return true;
 }
 
