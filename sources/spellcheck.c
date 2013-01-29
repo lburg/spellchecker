@@ -28,8 +28,8 @@ static bool vowel_char_cmp(char c1, char c2)
 ** also don't like the idea of a sub-function recursively
 ** calling its caller...
 */
-static char *rec_find_correction(const char *word, const size_t corrected_word_size,
-                                 const trie_t *trie)
+static char *rec_find_correction(const char *word, const int word_idx,
+                                 const size_t corrected_word_size, const trie_t *trie)
 {
     const trie_t  *child = trie->child;
 
@@ -39,10 +39,10 @@ static char *rec_find_correction(const char *word, const size_t corrected_word_s
     */
     while (child != NULL)
     {
-        if (child->key == word[0])
+        if (child->key == word[word_idx])
         {
             char  *corrected_word = NULL;
-            if (word[0] == '\0')
+            if (word[word_idx] == '\0')
             {
                 //we found the whole word, so let's allocate some space to store it
                 corrected_word = malloc((corrected_word_size + 1) *
@@ -51,7 +51,7 @@ static char *rec_find_correction(const char *word, const size_t corrected_word_s
             else
             {
                 //we didn't find the word yet, keep looking
-                corrected_word = rec_find_correction(word + 1,
+                corrected_word = rec_find_correction(word, word_idx + 1,
                                                      corrected_word_size + 1,
                                                      child);
             }
@@ -62,7 +62,7 @@ static char *rec_find_correction(const char *word, const size_t corrected_word_s
                 return corrected_word;//the word is built as we go back the call stack
             }
         }
-        else if (child->key > word[0])
+        else if (child->key > word[word_idx])
             break;//impossible to find the word anymore without spelling correction
         child = child->sibling;
     }
@@ -71,18 +71,18 @@ static char *rec_find_correction(const char *word, const size_t corrected_word_s
     child = trie->child;
     while (child != NULL)
     {
-        if (case_char_cmp(child->key, word[0]) == true ||
-            vowel_char_cmp(child->key, word[0]) == true)
+        if (case_char_cmp(child->key, word[word_idx]) == true ||
+            vowel_char_cmp(child->key, word[word_idx]) == true)
         {
             char  *corrected_word = NULL;
-            if (word[0] == '\0')
+            if (word[word_idx] == '\0')
             {
                 corrected_word = malloc((corrected_word_size + 1) *
                                         sizeof(*corrected_word));
             }
             else
             {
-                corrected_word = rec_find_correction(word + 1,
+                corrected_word = rec_find_correction(word, word_idx + 1,
                                                      corrected_word_size + 1,
                                                      child);
             }
@@ -94,11 +94,18 @@ static char *rec_find_correction(const char *word, const size_t corrected_word_s
         }
         child = child->sibling;
     }
+    /*
+    ** If the previous letter is the same as the current,
+    ** then we consider it a double and skip it.
+    */
+    if (word_idx > 0 &&
+        word[word_idx - 1] == word[word_idx])
+        return rec_find_correction(word, word_idx + 1, corrected_word_size, trie);
     return NULL;
 }
 
 char  *find_correction(const char *word, const trie_t *trie)
 {
-    return rec_find_correction(word, 0, trie);
+    return rec_find_correction(word, 0, 0, trie);
 }
 
