@@ -1,25 +1,35 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "trie.h"
 
 int   main(void)
 {
-    trie_t  *t = new_trie_root();
+    trie_t  *words = trie_new_root();
 
-    if (t == NULL)
+    if (words == NULL)
     {
-        fprintf(stderr, "Failed to build trie from dictionary words.\n");
+        fprintf(stderr, "Failed to create trie root.\n");
         return EXIT_FAILURE;
     }
-    add_string("tea", t);
-    add_string("ted", t);
-    add_string("ten", t);
-    add_string("in", t);
-    add_string("inn", t);
+    const char  *dictionary_path = "/usr/share/dict/words";
+    FILE  *dictionary_stream = fopen(dictionary_path, "r");
 
-    if (is_in_trie("inn", t) == true)
-        printf("ten is in trie!\n");
-    else
-        printf("ten NOT in trie :(\n");
+    if (dictionary_stream == NULL)
+    {
+        fprintf(stderr, "Failed to open dictionary at %s\n", dictionary_path);
+        return EXIT_FAILURE;
+    }
+    size_t  useless = 0;
+    char    *line = NULL;
+
+    while (getline(&line, &useless, dictionary_stream) != -1)
+    {
+        line[strlen(line) - 1] = 0;//removes newline
+        trie_add_string(line, words);
+    }
+    delete_trie(words);
+    free(line);
+    fclose(dictionary_stream);
     return EXIT_SUCCESS;
 }

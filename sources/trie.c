@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include "trie.h"
 
-trie_t  *new_trie_root(void)
+trie_t  *trie_new_root(void)
 {
-    return new_node('\0');
+    return trie_new_node('\0');
 }
 
-trie_t  *new_node(const char key)
+trie_t  *trie_new_node(const char key)
 {
     trie_t  *node = malloc(sizeof(*node));
 
@@ -22,7 +22,7 @@ trie_t  *new_node(const char key)
     return node;
 }
 
-bool  add_string(const char *string, trie_t *trie)
+bool  trie_add_string(const char *string, trie_t *trie)
 {
     trie_t  *child = trie->child;
     trie_t  *last = NULL;
@@ -34,7 +34,7 @@ bool  add_string(const char *string, trie_t *trie)
         {
             if (string[0] == '\0')//..and its the end of the word..
                 return false;//..then the word is already in the trie
-            return add_string(string + 1, child);//..else we keep going
+            return trie_add_string(string + 1, child);//..else we keep going
         }
         //..or if the key is past the letter (looking for 'b' but already looking at 'f')
         else if (child->key > string[0])
@@ -42,7 +42,7 @@ bool  add_string(const char *string, trie_t *trie)
         last = child;
         child = child->sibling;
     }
-    trie_t  *node = new_node(string[0]);
+    trie_t  *node = trie_new_node(string[0]);
     //If we need to insert the word before others.. ('inn' goes before 'tea')
     if (last == NULL)
     {
@@ -59,12 +59,12 @@ bool  add_string(const char *string, trie_t *trie)
     string++;//we did this during this loop
     while (string[0] != '\0')
     {
-        node->child = new_node(string[0]);
+        node->child = trie_new_node(string[0]);
         node = node->child;
         string++;
     }
     /* Last node to specify end of word */
-    node->child = new_node(string[0]);
+    node->child = trie_new_node(string[0]);
     return true;
 }
 
@@ -87,4 +87,17 @@ bool  is_in_trie(const char *string, const trie_t *trie)
         child = child->sibling;
     }
     return false;
+}
+
+void  delete_trie(trie_t *trie)
+{
+    trie_t  *tmp = NULL;
+
+    while (trie != NULL)
+    {
+        delete_trie(trie->child);
+        tmp = trie;
+        trie = trie->sibling;
+        free(tmp);
+    }
 }
