@@ -16,6 +16,7 @@ include_directories(
 list(APPEND SPELLCHECKER_SOURCES
     ${SOURCES_DIR}/trie.c
     ${SOURCES_DIR}/spellcheck.c
+    ${SOURCES_DIR}/autocomplete.c
     ${SOURCES_DIR}/main.c
     )
 
