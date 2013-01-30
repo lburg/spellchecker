@@ -15,7 +15,7 @@ trie_t  *trie_new_node(const char key)
 
     if (node == NULL)
     {
-        fprintf(stderr, "new_node failed: Running out of virtual memory.\n");
+        fprintf(stderr, "trie_new_node failed: Running out of virtual memory.\n");
         return NULL;
     }
     node->key = key;
