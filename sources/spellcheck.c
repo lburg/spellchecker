@@ -1,4 +1,5 @@
 #include <strings.h>
+#include <string.h>
 #include <stdlib.h>
 #include "trie.h"
 
@@ -44,9 +45,8 @@ static char *rec_find_correction(const char *word, const int word_idx,
             char  *corrected_word = NULL;
             if (word[word_idx] == '\0')
             {
-                //we found the whole word, so let's allocate some space to store it
-                corrected_word = malloc((corrected_word_size + 1) *
-                                        sizeof(*corrected_word));
+                //we found the whole word, so let's return it from the last node
+                return strdup(child->whole_word);
             }
             else
             {
@@ -55,11 +55,10 @@ static char *rec_find_correction(const char *word, const int word_idx,
                                                      corrected_word_size + 1,
                                                      child);
             }
-            //if the word was found/allocated..
+            //if the word was found..
             if (corrected_word != NULL)
             {
-                corrected_word[corrected_word_size] = child->key;//..we build it
-                return corrected_word;//the word is built as we go back the call stack
+                return corrected_word;//..we return it
             }
         }
         else if (child->key > word[word_idx])
@@ -77,8 +76,7 @@ static char *rec_find_correction(const char *word, const int word_idx,
             char  *corrected_word = NULL;
             if (word[word_idx] == '\0')
             {
-                corrected_word = malloc((corrected_word_size + 1) *
-                                        sizeof(*corrected_word));
+                return strdup(child->whole_word);
             }
             else
             {
@@ -88,8 +86,7 @@ static char *rec_find_correction(const char *word, const int word_idx,
             }
             if (corrected_word != NULL)
             {
-                corrected_word[corrected_word_size] = child->key;//..we build it
-                return corrected_word;//the word is built as we go back the call stack
+                return corrected_word;
             }
         }
         child = child->sibling;
@@ -97,6 +94,7 @@ static char *rec_find_correction(const char *word, const int word_idx,
     /*
     ** If the previous letter is the same as the current,
     ** then we consider it a double and skip it.
+    ** Should we consider case or not?
     */
     if (word_idx > 0 &&
         word[word_idx - 1] == word[word_idx])

@@ -7,6 +7,7 @@ typedef struct s_trie trie_t;
 struct  s_trie
 {
     char    key;
+    char    *whole_word;
     trie_t  *child;
     trie_t  *sibling;
 };
@@ -14,6 +15,7 @@ struct  s_trie
 /* Allocation */
 trie_t  *trie_new_root(void);
 trie_t  *trie_new_node(const char key);
+trie_t  *trie_new_delimiter_node(const char *word);
 
 /* Manipulation */
 bool  trie_add_string(const char *string, trie_t *trie);
