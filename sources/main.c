@@ -77,8 +77,11 @@ int   main(int argc, char *argv[])
 {
     bool  autocomplete = false;
 
+    //Hardcore argument handling
     if (argc > 1 && strcmp(argv[1], "--autocomplete") == 0)
         autocomplete = true;
+    //Registering signal to test leak in my trie implementation
+    //(could have used CTRL-D to stop the program.. oh well)
     if (signal(SIGINT, &signal_handler) == SIG_ERR ||
         signal(SIGTERM, &signal_handler) == SIG_ERR ||
         signal(SIGQUIT, &signal_handler) == SIG_ERR)
