@@ -1,6 +1,7 @@
 #include <strings.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "trie.h"
 
 static bool case_char_cmp(char c1, char c2)
@@ -13,10 +14,8 @@ static bool vowel_char_cmp(char c1, char c2)
     /*
     ** Puts c1 and c2 in lower case.
     */
-    if (c1 >= 'A' && c1 <= 'Z')
-        c1 += ('a' - 'A');
-    if (c2 >= 'A' && c2 <= 'Z')
-        c2 += ('a' - 'A');
+    c1 = tolower(c1);
+    c2 = tolower(c2);
 
     if ((c1 == 'a' || c1 == 'e' || c1 == 'i' || c1 == 'o' || c1 == 'u' || c1 == 'y') &&
         (c2 == 'a' || c2 == 'e' || c2 == 'i' || c2 == 'o' || c2 == 'u' || c2 == 'y'))
