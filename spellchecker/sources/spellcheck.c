@@ -9,6 +9,13 @@ static bool case_char_cmp(char c1, char c2)
     return strncasecmp(&c1, &c2, 1) == 0;
 }
 
+static bool isvowel(char c)
+{
+    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y')
+        return true;
+    return false;
+}
+
 static bool vowel_char_cmp(char c1, char c2)
 {
     /*
@@ -17,8 +24,7 @@ static bool vowel_char_cmp(char c1, char c2)
     c1 = tolower(c1);
     c2 = tolower(c2);
 
-    if ((c1 == 'a' || c1 == 'e' || c1 == 'i' || c1 == 'o' || c1 == 'u' || c1 == 'y') &&
-        (c2 == 'a' || c2 == 'e' || c2 == 'i' || c2 == 'o' || c2 == 'u' || c2 == 'y'))
+    if (isvowel(c1) == true && isvowel(c2) == true)
         return true;
     return false;
 }
